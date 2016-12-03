@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    // TODO: abstract this JS out to another file 
+    $(document).ready(function(){
+      // only enable the submit button given these conditions
+      $('input').keyup(function() {
+        if ($('#username').val() != '' &&
+          $('#password').val() != '' &&
+          $('#password').val() == $('#confirm').val()) {
+          $('#submit').removeAttr('disabled');
+        } else {
+          $('#submit').attr('disabled', 'disabled');
+        }
+      });
+      // hit this endpoint on submit
+      $('#userForm').submit(function(){
+        $.post(
+          '/user',
+          $('#userForm').serializeArray(),
+          function() {
+            window.location = '/';
+          });
+        return false;
+      });
+    });
+    </script>
+</head>
+    <body>
+      <form id="userForm">
+        Username:<br>
+        <input type="text" name="username" id="username">
+        <br>
+        Password:<br>
+        <input type="password" name="password" id="password">
+        <br>
+        Confirm Password:<br>
+        <input type="password" name="confirm" id="confirm">
+        <br><br>
+        <input type="submit" disabled="disabled" id="submit" value="Submit">
+      </form>
+    </body>
+</html>

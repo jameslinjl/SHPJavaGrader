@@ -5,9 +5,12 @@
     <script>
     $(document).ready(function(){
       $('#userPassForm').submit(function(){
-        $.post('/auth', function() {
-          window.location = '/';
-        });
+        $.post(
+          '/auth',
+          $('#userPassForm').serializeArray(),
+          function() {
+            window.location = '/';
+          });
         return false;
       });
     });
