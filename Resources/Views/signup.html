@@ -17,18 +17,20 @@
       });
       // hit this endpoint on submit
       $('#userForm').submit(function(){
-        $.post(
-          '/user',
-          $('#userForm').serializeArray(),
-          function() {
-            window.location = '/';
-          });
+        $.post('/user', $('#userForm').serializeArray())
+        .done(function() {
+          window.location = '/login';
+        })
+        .fail(function() {
+            alert('Invalid username or password. Please try again!');
+        });
         return false;
       });
     });
     </script>
 </head>
     <body>
+      <h1>New User Registration</h1>
       <form id="userForm">
         Username:<br>
         <input type="text" name="username" id="username">
