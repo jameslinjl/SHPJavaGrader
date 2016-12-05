@@ -1,0 +1,40 @@
+#extend("base")
+
+#export("head") {
+  #raw() {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+      $('#assignmentForm').submit(function(){
+        $.post('/assignment', $('#assignmentForm').serializeArray())
+        .done(function() {
+            window.location = '/';
+        })
+        .fail(function() {
+            alert('POST failed! Probably invalid assignment information.');
+        });
+        return false;
+      });
+    });
+    </script>
+  }
+}
+
+#export("body") {
+  <h1>Main Assignments Page</h1>
+  <h2>Create New Assignment</h2>
+  <form id="assignmentForm">
+    <select name="labNumber">
+      #loop(assignmentMappings, "assignmentMapping") {
+        <option value="#(assignmentMapping.lab_number)">#(assignmentMapping.name) (Lab #(assignmentMapping.lab_number))</option>
+      }
+    </select>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+  <h2>Current Assignments</h2> 
+  #loop(assignments, "assignment") {
+    <a href="/assignment/#(assignment.id)">#(assignment.lab_number)</a>
+    <br>
+  }
+}
