@@ -140,6 +140,28 @@ drop.post("assignment") { req in
     return Response(status: .ok)
 }
 
+drop.patch("assignment") { req in
+    // only PATCHes source right now, expand to do everything eventually
+    if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
+        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": ~source]])
+    }
+    return Response(status: .ok)
+}
+
+drop.get("assignment", ":id") { req in
+    guard let assignmentId = req.parameters["id"]?.string else {
+        throw Abort.badRequest
+    }
+
+    let result = Array(try assignmentCollection.find(matching: "_id" == ObjectId(assignmentId)))
+    if result.count == 1 {
+        return try drop.view.make("assignment", [
+            "savedSource": result[0]["content"].string
+        ])
+    }
+    return Response(status: .badRequest)
+}
+
 drop.post("auth") { req in
     if let username = req.data["username"]?.string, let password = req.data["password"]?.string {
         let password_enc = try drop.hash.make(password)

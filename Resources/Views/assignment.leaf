@@ -1,0 +1,39 @@
+#extend("base")
+
+#export("head") {
+  #raw() {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+      $('#assignmentForm').submit(function(){
+        var dataToSend = $('#assignmentForm').serializeArray();
+        // TODO: strip off querystrings and stuff, make this more resilient
+        var filename = window.location.href.substr(
+          window.location.href.lastIndexOf('/') + 1
+        );
+        dataToSend.push({'name': 'id', 'value': filename});
+        console.log(dataToSend);
+        $.ajax({
+          url: '/assignment',
+          type : 'PATCH',
+          data : dataToSend,
+          error : function(jqXHR, textStatus, errorThrown) {
+            alert('PUT failed! Probably invalid assignment information.');
+          }
+        });
+        return false;
+      });
+    });
+    </script>
+  }
+}
+
+#export("body") {
+  <h1>Assignment</h1>
+  <textarea name="source" cols="120" rows="40" form="assignmentForm">#(savedSource)</textarea>
+  <form id="assignmentForm">
+    <br>
+    <input type="submit" value="Save">
+  </form>
+  }
+}
