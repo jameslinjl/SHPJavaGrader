@@ -16,6 +16,7 @@ let database = server["shp_practice"]
 let userCollection = database["user"]
 let assignmentCollection = database["assignment"]
 let assignmentMappingsCollection = database["assignmentMappings"]
+let gradingResultCollection = database["gradingResult"]
 let memory = MemorySessions()
 let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
@@ -158,6 +159,43 @@ drop.get("assignment", ":id") { req in
         return try drop.view.make("assignment", [
             "savedSource": result[0]["content"].string
         ])
+    }
+    return Response(status: .badRequest)
+}
+
+drop.get("grade", ":id") { req in
+    guard let gradingResultId = req.parameters["id"]?.string else {
+        throw Abort.badRequest
+    }
+
+    let result = Array(try gradingResultCollection.find(matching: "_id" == ObjectId(gradingResultId)))
+    if result.count == 1 {
+        return try drop.view.make("grade", [
+            "savedSource": result[0]["content"].string
+        ])
+    }
+    return Response(status: .badRequest)
+}
+
+drop.post("grade") { req in
+    if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
+        // save first
+        // TODO: use a controller instead
+        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": ~source]])
+
+        // create a grading result document
+        if let username = try req.session().data["username"]?.string {
+            let gradingResultDocument: Document = [
+                "username": ~username,
+                "assignmentId": ~id,
+                "status": "pending",
+                "content": "Waiting to be processed"
+            ]
+            let result = try gradingResultCollection.insert(gradingResultDocument)
+            return try JSON(node: [
+                "gradeId": result.objectIdValue?.hexString
+            ])
+        }
     }
     return Response(status: .badRequest)
 }

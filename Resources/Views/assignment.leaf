@@ -4,14 +4,15 @@
   #raw() {
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
+    // TODO: refactor these all into functions and stuff
     $(document).ready(function(){
-      $('#assignmentForm').submit(function(){
+      $('#save_button').click(function(){
         var dataToSend = $('#assignmentForm').serializeArray();
         // TODO: strip off querystrings and stuff, make this more resilient
-        var filename = window.location.href.substr(
-          window.location.href.lastIndexOf('/') + 1
-        );
-        dataToSend.push({'name': 'id', 'value': filename});
+        var filename = window.location.href;
+        var pattern = /\/assignment\/(\w+)\??/;
+        var match = pattern.exec(filename);
+        dataToSend.push({'name': 'id', 'value': match[1]});
         console.log(dataToSend);
         $.ajax({
           url: '/assignment',
@@ -19,6 +20,29 @@
           data : dataToSend,
           error : function(jqXHR, textStatus, errorThrown) {
             alert('PUT failed! Probably invalid assignment information.');
+          }
+        });
+        return false;
+      });
+
+      $('#grade_button').click(function(){
+        var dataToSend = $('#assignmentForm').serializeArray();
+        // TODO: strip off querystrings and stuff, make this more resilient
+        var filename = window.location.href;
+        var pattern = /\/assignment\/(\w+)\??/;
+        var match = pattern.exec(filename);
+        dataToSend.push({'name': 'id', 'value': match[1]});
+        console.log(dataToSend);
+        $.ajax({
+          url: '/grade',
+          type : 'POST',
+          data : dataToSend,
+          success: function(data) {
+            var gradeId = data['gradeId'];
+            window.location = '/grade/' + gradeId;
+          },
+          error : function(jqXHR, textStatus, errorThrown) {
+            alert('POST failed! Probably invalid assignment information.');
           }
         });
         return false;
@@ -33,7 +57,7 @@
   <textarea name="source" cols="120" rows="40" form="assignmentForm">#(savedSource)</textarea>
   <form id="assignmentForm">
     <br>
-    <input type="submit" value="Save">
+    <input type="submit" id="save_button" value="Save">
+    <input type="submit" id="grade_button" value="Save and Grade">
   </form>
-  }
 }
