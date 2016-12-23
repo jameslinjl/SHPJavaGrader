@@ -3,3 +3,5 @@ Packages
 xcuserdata
 *.xcodeproj
 Config/secrets
+*.jar
+*.class
