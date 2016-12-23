@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # check that mongodb is up and running
 MONGOD_PID=`pgrep mongod`
@@ -8,6 +8,8 @@ if [[ -n $MONGOD_PID ]]; then
     echo "Will add smarter logic later"
 else
     echo "Launching mongod and logging to syslog"
+    # make sure that default data/db location is there
+    sudo mkdir -p /data/db
     # fork so that the script will terminate
     sudo mongod --fork --syslog
 fi
