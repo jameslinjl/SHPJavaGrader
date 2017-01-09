@@ -6,7 +6,7 @@ import Vapor
 
 let server: MongoKitten.Server
 do {
-    server = try MongoKitten.Server(mongoURL: "mongodb://localhost:27017", automatically: true)
+    server = try MongoKitten.Server(mongoURL: "mongodb://localhost:27017")
 } catch {
     // Unable to connect
     fatalError("MongoDB is not available on the given host and port")
@@ -35,8 +35,8 @@ drop.get { req in
             let assignmentMappingDocs = try assignmentMappingsCollection.find()
             // populate Node array with db results
             for assignmentMappingDoc in assignmentMappingDocs {
-                let assignmentName = assignmentMappingDoc["name"].stringValue
-                let assignmentLabNumber = assignmentMappingDoc["lab_number"].int32Value
+                let assignmentName = assignmentMappingDoc[raw: "name"]?.stringValue
+                let assignmentLabNumber = assignmentMappingDoc[raw: "lab_number"]?.int32Value
                 if assignmentName != nil && assignmentLabNumber != nil {
                     assignmentMappingNodes.append(
                         Node(
@@ -54,9 +54,9 @@ drop.get { req in
             var assignmentNodes: [Node] = [Node]()
             let assignmentDocs = try assignmentCollection.find(matching: "username" == username)
             for assignmentDoc in assignmentDocs {
-                let assignmentId = assignmentDoc["_id"].objectIdValue?.hexString
+                let assignmentId = assignmentDoc[raw: "_id"]?.objectIdValue?.hexString
                 // TODO: fix the POST and make this int32
-                let assignmentLabNumber = assignmentDoc["lab_number"].int64Value
+                let assignmentLabNumber = assignmentDoc[raw: "lab_number"]?.int64Value
                 if assignmentId != nil && assignmentLabNumber != nil {
                     assignmentNodes.append(
                         Node(
@@ -101,9 +101,9 @@ drop.post("user") { req in
         // TODO: salt the password as well
         let password_enc = try drop.hash.make(password)
         let userDocument: Document = [
-            "username": ~username,
-            "password_enc": ~password_enc
-        ]
+            "username": username,
+            "password_enc": password_enc
+        ] as Document
         try userCollection.insert(userDocument)
     }
     return Response(status: .ok)
@@ -130,11 +130,11 @@ drop.post("assignment") { req in
         }
         if let username = try req.session().data["username"]?.string {
             let assignmentDocument: Document = [
-                "username": ~username,
+                "username": username,
                 // TODO: make this insertt an int32 rather than int64
-                "lab_number": ~Int(labNumber)!,
+                "lab_number": Int(labNumber)!,
                 "content": ""
-            ]
+            ] as Document
             try assignmentCollection.insert(assignmentDocument)
         }
     }
@@ -144,7 +144,7 @@ drop.post("assignment") { req in
 drop.patch("assignment") { req in
     // only PATCHes source right now, expand to do everything eventually
     if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
-        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": ~source]])
+        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": source] as Document])
     }
     return Response(status: .ok)
 }
@@ -156,9 +156,11 @@ drop.get("assignment", ":id") { req in
 
     let result = Array(try assignmentCollection.find(matching: "_id" == ObjectId(assignmentId)))
     if result.count == 1 {
-        return try drop.view.make("assignment", [
-            "savedSource": result[0]["content"].string
-        ])
+        if let content = result[0][raw: "content"]?.string {
+            return try drop.view.make("assignment", [
+                "savedSource": content
+            ])
+        }
     }
     return Response(status: .badRequest)
 }
@@ -170,9 +172,11 @@ drop.get("grade", ":id") { req in
 
     let result = Array(try gradingResultCollection.find(matching: "_id" == ObjectId(gradingResultId)))
     if result.count == 1 {
-        return try drop.view.make("grade", [
-            "savedSource": result[0]["content"].string
-        ])
+        if let content = result[0][raw: "content"]?.string {
+            return try drop.view.make("grade", [
+                "savedSource": content
+            ])
+        }
     }
     return Response(status: .badRequest)
 }
@@ -181,16 +185,16 @@ drop.post("grade") { req in
     if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
         // save first
         // TODO: use a controller instead
-        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": ~source]])
+        try assignmentCollection.update(matching: "_id" == ObjectId(id), to: ["$set": ["content": source] as Document])
 
         // create a grading result document
         if let username = try req.session().data["username"]?.string {
             let gradingResultDocument: Document = [
-                "username": ~username,
-                "assignmentId": ~id,
+                "username": username,
+                "assignmentId": id,
                 "status": "pending",
                 "content": "Waiting to be processed"
-            ]
+            ] as Document
             let result = try gradingResultCollection.insert(gradingResultDocument)
             return try JSON(node: [
                 "gradeId": result.objectIdValue?.hexString
@@ -204,7 +208,8 @@ drop.post("auth") { req in
     if let username = req.data["username"]?.string, let password = req.data["password"]?.string {
         let password_enc = try drop.hash.make(password)
         let result = Array(try userCollection.find(matching: "username" == username))
-        if result.count == 1 && result[0]["password_enc"].string == password_enc {
+        let storedPass = result[0][raw: "password_enc"]?.string
+        if result.count == 1 && storedPass != nil && storedPass == password_enc {
             // TODO: convert this into server-side authentication
             try req.session().data["username"] = Node.string(username)
             let unixTimestamp = String(Date(timeIntervalSinceNow: 60 * 60).timeIntervalSince1970)
