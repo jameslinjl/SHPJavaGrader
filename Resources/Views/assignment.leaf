@@ -60,4 +60,6 @@
     <input type="submit" id="save_button" value="Save">
     <input type="submit" id="grade_button" value="Save and Grade">
   </form>
+  <br>
+  <a href="/">Back to Main Page</a>
 }
