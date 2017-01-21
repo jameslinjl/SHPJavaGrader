@@ -47,7 +47,7 @@ drop.get { req in
                         )
                     )
                 } else {
-                    return Response(status: .badRequest)
+                    return Response(status: .internalServerError)
                 }
             }
 
@@ -67,7 +67,7 @@ drop.get { req in
                         )
                     )
                 } else {
-                    return Response(status: .badRequest)
+                    return Response(status: .internalServerError)
                 }
             }
             return try drop.view.make("home", [
@@ -132,7 +132,7 @@ drop.post("assignment") { req in
             let assignmentDocument: Document = [
                 "username": username,
                 // TODO: make this insertt an int32 rather than int64
-                "lab_number": Int(labNumber)!,
+                "lab_number": Int64(labNumber)!,
                 "content": ""
             ] as Document
             try assignmentCollection.insert(assignmentDocument)
@@ -172,13 +172,15 @@ drop.get("grade", ":id") { req in
 
     let result = Array(try gradingResultCollection.find(matching: "_id" == ObjectId(gradingResultId)))
     if result.count == 1 {
-        if let content = result[0][raw: "content"]?.string {
+        if let content = result[0][raw: "content"]?.string,
+           let assignmentId = result[0][raw: "assignmentId"]?.string {
             return try drop.view.make("grade", [
-                "savedSource": content
+                "savedSource": content,
+                "assignmentId": assignmentId
             ])
         }
     }
-    return Response(status: .badRequest)
+    return Response(status: .internalServerError)
 }
 
 drop.post("grade") { req in
@@ -218,6 +220,15 @@ drop.post("auth") { req in
         }
     }
     return Response(status: .badRequest)
+}
+
+drop.post("logout") { req in
+    do {
+        try req.session().destroy()
+    } catch {
+        return Response(status: .internalServerError)
+    }
+    return Response(status: .ok)
 }
 
 // TODO: delete all this

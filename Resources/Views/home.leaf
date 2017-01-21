@@ -15,6 +15,15 @@
         });
         return false;
       });
+      $('#logOutButton').click(function(){
+        $.post('/logout')
+        .done(function() {
+            window.location = '/';
+        })
+        .fail(function() {
+            alert('An error on the server occurred!');
+        });
+      });
     });
     </script>
   }
@@ -22,6 +31,7 @@
 
 #export("body") {
   <h1>Main Assignments Page</h1>
+  <button type="button" id="logOutButton">Log Out</button>
   <h2>Create New Assignment</h2>
   <form id="assignmentForm">
     <select name="labNumber">
