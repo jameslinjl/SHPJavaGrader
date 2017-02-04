@@ -1,5 +1,7 @@
 # SHP Java Grader
 
+[![Build Status](https://travis-ci.org/jameslinjl/SHPJavaGrader.svg?branch=master)](https://travis-ci.org/jameslinjl/SHPJavaGrader)
+
 ## Overview
 This project was born out of a desire to provide simple evaluation and feedback
 for students of Columbia University's Science Honors Program (enrichment program
