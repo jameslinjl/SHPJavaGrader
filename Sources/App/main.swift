@@ -4,15 +4,19 @@ import MongoKitten
 import Sessions
 import Vapor
 
+let drop = Droplet()
+let dbName = drop.config["servers", "default", "mongoDBName"]?.string ?? "practice"
+let mongoHost = drop.config["servers", "mongo-host"]?.string ?? "localhost"
+let mongoPort = drop.config["servers", "mongo-port"]?.string ?? "27017"
+
 let server: MongoKitten.Server
 do {
-    server = try MongoKitten.Server(mongoURL: "mongodb://localhost:27017")
+    server = try MongoKitten.Server(mongoURL: "mongodb://" + mongoHost + ":" + mongoPort)
 } catch {
-    // Unable to connect
     fatalError("MongoDB is not available on the given host and port")
 }
 
-let database = server["shp_practice"]
+let database = server[dbName]
 let userCollection = database["user"]
 let assignmentCollection = database["assignment"]
 let assignmentMappingsCollection = database["assignmentMappings"]
@@ -20,7 +24,6 @@ let gradingResultCollection = database["gradingResult"]
 let memory = MemorySessions()
 let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
-let drop = Droplet()
 drop.middleware.append(sessions)
 
 // see the home page if authenticated, otherwise go to login
