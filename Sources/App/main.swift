@@ -79,6 +79,10 @@ drop.get { req in
     return Response(redirect: "login")
 }
 
+drop.get("website") { req in
+    return Response(redirect: "http://www.columbia.edu/~jl3782/shp")
+}
+
 // see the login page
 drop.get("login") { req in
     return try drop.view.make("login.html")

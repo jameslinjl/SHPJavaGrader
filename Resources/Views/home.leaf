@@ -31,6 +31,7 @@
 
 #export("body") {
   <h1>Main Assignments Page</h1>
+  <a href="website">SHP Course Website</a><br><br>
   <button type="button" id="logOutButton">Log Out</button>
   <h2>Create New Assignment</h2>
   <form id="assignmentForm">
