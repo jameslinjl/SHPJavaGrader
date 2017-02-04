@@ -16,6 +16,7 @@ fi
 
 # generate the static data
 mongo localhost:27017/shp_practice Resources/Scripts/mongo_up.js
+mongo localhost:27017/shp Resources/Scripts/mongo_up.js
 
 # download junit and hamcrest-core jar files
 if [[ -s Resources/JUnit/junit-4.12.jar ]]; then
