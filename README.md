@@ -13,14 +13,6 @@ very little programming background to get valuable feedback and testing of their
 code. An additional hope is that instructors and TAs will be able to easily add
 new assignments to be graded.
 
-## Tech Stack
-Rudimentary so far... looking to use better technology after getting an MVP out.
-* Web Framework: Vapor (Swift)
-* Database: MongoDB + MongoKitten (Swift)
-* Frontend / Templating: Leaf (Swift) with basic JQuery (JavaScript)
-* Testing Framework: JUnit (Java)
-* Job Scheduler (Python)
-
 ## Setup
 
 Step 0. Use Mac or Linux. Sorry Windows friends :P
@@ -28,7 +20,8 @@ Step 0. Use Mac or Linux. Sorry Windows friends :P
 First, you'll need to make sure Swift and Vapor are installed. (Vapor has some
 sweet docs for doing so: https://vapor.github.io/documentation/getting-started/install-swift-3-macos.html )
 
-Next, you'll want to make sure that MongoDB is installed.
+Next, you'll want to make sure that MongoDB is installed. (MongoDB has some easy docs to
+follow for this: https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/ )
 
 You also need to make sure that you have Python 2. You may also need to install
 pip, bson, and pymongo. On Ubuntu, this probably looks something like:
@@ -39,7 +32,8 @@ sudo pip install bson
 sudo pip install pymongo
 ```
 
-You should also make sure that you have java and javac installed.
+You should also make sure that you have a JDK installed. (You can download that here: 
+http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html )
 
 Now, you'll want to run the setup script at the top level of the repo. This will
 sudo rm -rf root... jk... it'll do some insertion of static data and get other
