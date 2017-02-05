@@ -5,5 +5,8 @@ language: generic
 sudo: required
 dist: trusty
 osx_image: xcode8.1
+branches:
+  only:
+    - master
 script:
   - eval "$(curl -sL https://gist.githubusercontent.com/jameslinjl/036038a91c83f5479cc781ac4c736972/raw/425b5da5fc4c4d59baa7b0e6e92b5b9b3b3fd897/vapor-ci-no-tests.sh)"
