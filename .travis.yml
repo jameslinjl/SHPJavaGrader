@@ -6,4 +6,4 @@ sudo: required
 dist: trusty
 osx_image: xcode8.1
 script:
-  - eval "$(curl -sL https://gist.githubusercontent.com/jameslinjl/036038a91c83f5479cc781ac4c736972/raw/f4b319e092446f878852b16e8d569ae2f50bf60b/vapor-ci-no-tests.sh)"
+  - eval "$(curl -sL https://gist.githubusercontent.com/jameslinjl/036038a91c83f5479cc781ac4c736972/raw/425b5da5fc4c4d59baa7b0e6e92b5b9b3b3fd897/vapor-ci-no-tests.sh)"
