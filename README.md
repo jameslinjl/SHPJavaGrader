@@ -1,6 +1,8 @@
 # SHP Java Grader
 
+![Swift](https://img.shields.io/badge/swift-3.0-brightgreen.svg)
 [![Build Status](https://travis-ci.org/jameslinjl/SHPJavaGrader.svg?branch=master)](https://travis-ci.org/jameslinjl/SHPJavaGrader)
+[![StackShare](https://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/jameslinjl/shp-java-grader)
 
 ## Overview
 This project was born out of a desire to provide simple evaluation and feedback
