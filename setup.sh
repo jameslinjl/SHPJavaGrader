@@ -43,6 +43,12 @@ fi
 
 # cd hack to make $PATH correct?
 cd Resources/Scripts
-# make this actually log to a real place and not /dev/null someday
-nohup python grade_runner.py > /dev/null 2>&1 &
+if [[ -n $1 && $1 == "prod" ]]; then
+    echo "Running prod grading script"
+    # make this actually log to a real place and not /dev/null someday
+    nohup python grade_runner.py prod > /dev/null 2>&1 &
+else
+    echo "Running dev grading script"
+    nohup python grade_runner.py > /dev/null 2>&1 &
+fi
 cd ../..

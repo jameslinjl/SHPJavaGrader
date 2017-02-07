@@ -1,11 +1,14 @@
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 from subprocess import call
+import sys
 from tempfile import mkdtemp
 from time import sleep
 
-client = MongoClient('localhost', 27017)
+client = MongoClient('127.0.0.1', 27017)
 db = client.shp_practice
+if len(sys.argv) > 1 and sys.argv[1] == 'prod':
+    db = client.shp
 collection = db.gradingResult
 assignmentCollection = db.assignment
 
