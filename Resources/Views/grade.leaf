@@ -1,8 +1,24 @@
 #extend("base")
 
+#export("head") {
+  #raw() {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var text = $('textarea#source').val();
+            if(text == 'Waiting to be processed') {
+                setTimeout(function(){
+                   window.location.reload(1);
+                }, 5000);
+            }
+        });
+    </script>
+  }
+}
+
 #export("body") {
   <h1>Grade</h1>
-  <textarea name="source" cols="120" rows="40" form="assignmentForm">#(savedSource)</textarea>
+  <textarea id="source" cols="120" rows="40">#(savedSource)</textarea>
   <br>
   <a href="/assignment/#(assignmentId)">Back to Assignment</a>
   <br>
