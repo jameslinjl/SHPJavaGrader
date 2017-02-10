@@ -163,9 +163,11 @@ drop.get("assignment", ":id") { req in
 
     let result = Array(try assignmentCollection.find(matching: "_id" == ObjectId(assignmentId)))
     if result.count == 1 {
-        if let content = result[0][raw: "content"]?.string {
+        if let content = result[0][raw: "content"]?.string,
+           let labNumber = result[0][raw: "lab_number"]?.int64Value {
             return try drop.view.make("assignment", [
-                "savedSource": content
+                "savedSource": content,
+                "labNumber": labNumber
             ])
         }
     }

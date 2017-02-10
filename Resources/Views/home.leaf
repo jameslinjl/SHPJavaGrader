@@ -61,7 +61,7 @@
       }
     </select>
     <br><br>
-    <input type="submit" value="Submit">
+    <input type="submit" value="Create New Assignment Submission">
   </form>
   <h2>Current Assignments</h2> 
   #loop(assignments, "assignment") {

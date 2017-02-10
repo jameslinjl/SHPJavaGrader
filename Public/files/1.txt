@@ -1,0 +1,36 @@
+<p>Easter Sunday is the first Sunday after the first full moon of spring. To compute the date,
+you can use this algorithm, invented by the mathematician Carl Friedrich Gauss in 1800:</p>
+<ol>
+    <li>Let y be the year (such as 1800 or 2001).</li>
+    <li>Divide y by 19 and call the remainder a. Ignore the quotient.</li>
+    <li>Divide y by 100 to get a quotient b and a remainder c.</li>
+    <li>Divide b by 4 to get a quotient d and a remainder e.</li>
+    <li>Divide 8 * b + 13 by 25 to get a quotient g. Ignore the remainder.</li>
+    <li>Divide 19 * a + b - d - g + 15 by 30 to get a remainder h. Ignore the quotient.</li>
+    <li>Divide c by 4 to get a quotient j and a remainder k.</li>
+    <li>Divide a + 11 * h by 319 to get a quotient m. Ignore the remainder.</li>
+    <li>Divide 2 * e + 2 * j - k - h + m + 32 by 7 to get a remainder r. Ignore the quotient.</li>
+    <li>Divide h - m + r + 90 by 25 to get a quotient n. Ignore the remainder.</li>
+    <li>Divide h - m + r + n + 19 by 32 to get a remainder p. Ignore the quotient.</li>
+</ol>
+<p>
+Then Easter falls on day p of month n.
+</p>
+
+<p>
+Write a class called <strong>EasterCalculator</strong> (note that you MUST have this exact
+name, or else you won't be able to test your code properly).
+</p>
+
+<p>
+In this class, write a function that calculates Easter with the following signature:
+</p>
+
+<p>
+    <strong>public static String computeEaster(int year)</strong>
+</p>
+
+<p>
+that takes a year in integer form as input and RETURNS (NOT PRINTS) the date
+of Easter as a String, in the format n/p (for example, 4/15 for April 15)
+</p>
