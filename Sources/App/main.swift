@@ -172,6 +172,14 @@ drop.get("assignment", ":id") { req in
     return Response(status: .badRequest)
 }
 
+drop.delete("assignment") { req in
+    if let id = req.data["id"]?.string {
+        try gradingResultCollection.remove(matching: "assignmentId" == id)
+        try assignmentCollection.remove(matching: "_id" == ObjectId(id))
+    }
+    return Response(status: .ok)
+}
+
 drop.get("grade", ":id") { req in
     guard let gradingResultId = req.parameters["id"]?.string else {
         throw Abort.badRequest
