@@ -13,7 +13,6 @@
         var pattern = /\/assignment\/(\w+)\??/;
         var match = pattern.exec(filename);
         dataToSend.push({'name': 'id', 'value': match[1]});
-        console.log(dataToSend);
         $.ajax({
           url: '/assignment',
           type : 'PATCH',
