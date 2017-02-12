@@ -88,12 +88,12 @@ drop.get("website") { req in
 
 // see the login page
 drop.get("login") { req in
-    return try drop.view.make("login.html")
+    return try drop.view.make("login")
 }
 
 // see the signup page
 drop.get("signup") { req in
-    return try drop.view.make("signup.html")
+    return try drop.view.make("signup")
 }
 
 // create a user using POST

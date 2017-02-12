@@ -1,0 +1,40 @@
+#extend("base")
+
+#export("head") {
+  #raw() {
+    <script>
+    $(document).ready(function(){
+      $('#userPassForm').submit(function(){
+        $.post('/auth', $('#userPassForm').serializeArray())
+        .done(function() {
+            window.location = '/';
+        })
+        .fail(function() {
+            $('#failure').show();
+        });
+        return false;
+      });
+      $('#signUpButton').click(function(){
+        window.location = '/signup';
+      });
+    });
+    </script>
+  }
+}
+
+#export("body") {
+  <h1>Existing User Login</h1>
+  <a href="website">SHP Course Website</a><br><br>
+  <form id="userPassForm">
+    Username:<br>
+    <input type="text" name="username">
+    <br>
+    Password:<br>
+    <input type="password" name="password">
+    <p style="color:red" id="failure" hidden> Login Failed. Please try again.</p>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+  <br>
+  <button type="button" id="signUpButton">New User</button>
+}
