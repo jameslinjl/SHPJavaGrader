@@ -226,14 +226,20 @@ drop.post("grade") { req in
 drop.post("auth") { req in
     if let username = req.data["username"]?.string, let password = req.data["password"]?.string {
         let password_enc = try drop.hash.make(password)
-        let result = Array(try userCollection.find(matching: "username" == username))
-        let storedPass = result[0][raw: "password_enc"]?.string
-        if result.count == 1 && storedPass != nil && storedPass == password_enc {
-            // TODO: convert this into server-side authentication
-            try req.session().data["username"] = Node.string(username)
-            let unixTimestamp = String(Date(timeIntervalSinceNow: 60 * 60).timeIntervalSince1970)
-            try req.session().data["expiration"] = Node.string(unixTimestamp)
-            return Response(status: .ok)
+        if let result = try userCollection.findOne(matching: "username" == username) {
+            if let storedPass = result[raw: "password_enc"]?.string {
+                if storedPass == password_enc {
+                    // TODO: convert this into server-side authentication
+                    try req.session().data["username"] = Node.string(username)
+                    let unixTimestamp = String(
+                        Date(
+                            timeIntervalSinceNow: 60 * 60
+                        ).timeIntervalSince1970
+                    )
+                    try req.session().data["expiration"] = Node.string(unixTimestamp)
+                    return Response(status: .ok)
+                }
+            }
         }
     }
     return Response(status: .badRequest)
