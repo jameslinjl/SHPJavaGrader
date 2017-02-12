@@ -5,8 +5,23 @@ language: generic
 sudo: required
 dist: trusty
 osx_image: xcode8.2
+addons:
+  sauce_connect:
+    username: "jameslinjl"
+    access_key: "d4f848bb-d6c5-4ab9-ad0a-6be7dfce9b49"
 branches:
   only:
     - master
+install:
+  - sudo pip install selenium
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install mongodb; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14518585931BC711F9BA15703C6; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu trusty/mongodb-org/3.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.4.list; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get install -y mongodb-org; fi
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mkdir -p /data/db; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo mongod --fork --syslog; fi
 script:
-  - eval "$(curl -sL https://gist.githubusercontent.com/jameslinjl/09f9f90726765008712cca9d2e2fa5ee/raw/38feb95e6a5bf8be4de32968295ca8a1300bdcdc/vapor-ci.sh)"
+  - eval "$(curl -sL https://gist.githubusercontent.com/jameslinjl/4e6971beb48039c344d82640cb799e1d/raw/df13310f88d492569bbc8dfeee1edae2932a432c/tracis-ci-with-selenium.sh)"
