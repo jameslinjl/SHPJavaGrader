@@ -27,7 +27,7 @@ In this class, write a function that calculates Easter with the following signat
 </p>
 
 <p>
-    <strong>public static String computeEaster(int year)</strong>
+    <code>public static String computeEaster(int year)</code>
 </p>
 
 <p>

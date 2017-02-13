@@ -2,25 +2,43 @@
 
 #export("head") {
   #raw() {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
-        $(document).ready(function(){
-            var text = $('textarea#source').val();
-            if(text == 'Waiting to be processed') {
-                setTimeout(function(){
-                   window.location.reload(1);
-                }, 5000);
-            }
+      $(document).ready(function(){
+        var text = $('textarea#source').val();
+        if(text == 'Waiting to be processed') {
+            setTimeout(function(){
+               window.location.reload(1);
+            }, 5000);
+        }
+
+        $('#logOutButton').click(function(){
+          $.post('/logout')
+          .done(function() {
+              window.location = '/';
+          })
+          .fail(function() {
+              alert('An error on the server occurred!');
+          });
         });
+
+        $('#assignmentButton').click(function(){
+          var assignmentId = $(document.activeElement).attr("assignmentId");
+          window.location = '/assignment/' + assignmentId;
+        });
+      });
     </script>
   }
+}
+
+#export("navbarContents") {
+  <ul class="nav navbar-nav navbar-right">
+    <li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
+  </ul>
 }
 
 #export("body") {
   <h1>Grade</h1>
   <textarea id="source" cols="120" rows="40">#(savedSource)</textarea>
   <br>
-  <a href="/assignment/#(assignmentId)">Back to Assignment</a>
-  <br>
-  <a href="/">Back to Main Page</a>
+  <button type="button" id="assignmentButton" class="btn btn-primary" assignmentId="#(assignmentId)">Back to Assignment</button>
 }

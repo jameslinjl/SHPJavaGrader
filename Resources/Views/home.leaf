@@ -2,7 +2,11 @@
 
 #export("head") {
   #raw() {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <!-- nicer select formatting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/i18n/defaults-*.min.js"></script>
+
     <script>
     $(document).ready(function(){
       $('#assignmentForm').submit(function(){
@@ -25,46 +29,48 @@
             alert('An error on the server occurred!');
         });
       });
-
-      $('.deleteButtons').click(function(){
-        var confirmed = confirm("Are you sure you want to delete this? There's no going back");
-        if (confirmed) {
-          var dataToSend = {'id': $(document.activeElement).attr("custom")};
-          $.ajax({
-            url: '/assignment',
-            type : 'DELETE',
-            data : dataToSend,
-            success: function() {
-              window.location = '/';
-            },
-            error : function(jqXHR, textStatus, errorThrown) {
-              alert('DELETE failed! Probably invalid assignment information.');
-            }
-          });
-        }
-        return false;
-      });
     });
     </script>
   }
 }
 
+#export("navbarContents") {
+  <ul class="nav navbar-nav navbar-right">
+    <li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
+  </ul>
+}
+
 #export("body") {
+<div class="col-xs-6 push-md-9 bd-sidebar">
   <h1>Main Assignments Page</h1>
-  <a href="website">SHP Course Website</a><br><br>
-  <button type="button" id="logOutButton">Log Out</button>
-  <h2>Create New Assignment</h2>
-  <form id="assignmentForm">
-    <select name="labNumber">
-      #loop(assignmentMappings, "assignmentMapping") {
-        <option value="#(assignmentMapping.lab_number)">#(assignmentMapping.name) (Lab #(assignmentMapping.lab_number))</option>
-      }
-    </select>
-    <br><br>
-    <input type="submit" value="Create New Assignment Submission">
-  </form>
-  <h2>Current Assignments</h2> 
-  #loop(assignments, "assignment") {
-    <p><a href="/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a> <button type="button" class="deleteButtons" custom="#(assignment.id)">Delete</button></p>
-  }
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Create New Assignment</h2>
+    </div>
+    <div class="panel-body">
+      <form id="assignmentForm">
+      <select name="labNumber" class="selectpicker">
+        #loop(assignmentMappings, "assignmentMapping") {
+          <option value="#(assignmentMapping.lab_number)">#(assignmentMapping.name) (Lab #(assignmentMapping.lab_number))</option>
+        }
+      </select>
+      <br><br>
+      <input type="submit" value="Create New Assignment Submission" class="btn btn-primary">
+    </form>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h2 class="panel-title">Current Assignments</h2>
+    </div>
+    <div class="panel-body">
+      <ul class="list-group">
+        #loop(assignments, "assignment") {
+          <li class="list-group-item"><a href="/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a></li>
+        }
+      </ul>
+    </div>
+  </div>
+</div>
 }

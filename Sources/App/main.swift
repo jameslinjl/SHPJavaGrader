@@ -82,18 +82,14 @@ drop.get { req in
     return Response(redirect: "login")
 }
 
-drop.get("website") { req in
-    return Response(redirect: "http://www.columbia.edu/~jl3782/shp")
-}
-
 // see the login page
 drop.get("login") { req in
-    return try drop.view.make("login.html")
+    return try drop.view.make("login")
 }
 
 // see the signup page
 drop.get("signup") { req in
-    return try drop.view.make("signup.html")
+    return try drop.view.make("signup")
 }
 
 // create a user using POST
@@ -167,7 +163,8 @@ drop.get("assignment", ":id") { req in
            let labNumber = result[0][raw: "lab_number"]?.int64Value {
             return try drop.view.make("assignment", [
                 "savedSource": content,
-                "labNumber": labNumber
+                "labNumber": labNumber,
+                "id": assignmentId
             ])
         }
     }

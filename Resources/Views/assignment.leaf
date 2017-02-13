@@ -1,8 +1,8 @@
 #extend("base")
 
 #export("head") {
+
   #raw() {
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script>
     // TODO: refactor these all into functions and stuff
     $(document).ready(function(){
@@ -46,6 +46,35 @@
         return false;
       });
 
+      $('#delete').click(function(){
+        var confirmed = confirm("Are you sure you want to delete this? There's no going back");
+        if (confirmed) {
+          var dataToSend = {'id': $(document.activeElement).attr("assignmentId")};
+          $.ajax({
+            url: '/assignment',
+            type : 'DELETE',
+            data : dataToSend,
+            success: function() {
+              window.location = '/';
+            },
+            error : function(jqXHR, textStatus, errorThrown) {
+              alert('DELETE failed! Probably invalid assignment information.');
+            }
+          });
+        }
+        return false;
+      });
+
+      $('#logOutButton').click(function(){
+        $.post('/logout')
+        .done(function() {
+            window.location = '/';
+        })
+        .fail(function() {
+            alert('An error on the server occurred!');
+        });
+      });
+
       var labNumber = $('#assignmentDetails').attr('custom');
       $('#assignmentDetails').load("/files/" + labNumber + ".txt");
     });
@@ -53,16 +82,21 @@
   }
 }
 
+#export("navbarContents") {
+  <ul class="nav navbar-nav navbar-right">
+    <li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
+  </ul>
+}
+
 #export("body") {
   <h1>Assignment</h1>
-  <div id="assignmentDetails" custom="#(labNumber)"></div>
+  <div id="assignmentDetails" custom="#(labNumber)" class="well"></div>
   <br>
-  <textarea name="source" cols="120" rows="40" form="assignmentForm">#(savedSource)</textarea>
+  <textarea name="source" cols="120" rows="40" form="assignmentForm" class="form-control">#(savedSource)</textarea>
   <form id="assignmentForm">
     <br>
-    <input type="submit" id="save_button" value="Save">
-    <input type="submit" id="grade_button" value="Save and Grade">
+    <input type="submit" id="save_button" value="Save" class="btn btn-primary">
+    <input type="submit" id="grade_button" value="Save and Grade" class="btn btn-primary">
+    <button type="button" id="delete" class="btn btn-danger" assignmentId="#(id)">Delete</button>
   </form>
-  <br>
-  <a href="/">Back to Main Page</a>
 }
