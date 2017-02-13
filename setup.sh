@@ -33,7 +33,7 @@ else
 fi
 
 # kick off grade_runner
-GRADE_RUNNER_PID=`pgrep python Resources/Scripts/grade_runner.py`
+GRADE_RUNNER_PID=`pgrep -f 'python grade_runner.py'`
 if [[ -n $GRADE_RUNNER_PID ]]; then
     echo "Killing existing grade_runner.py and starting new one"
     sudo kill -9 $GRADE_RUNNER_PID

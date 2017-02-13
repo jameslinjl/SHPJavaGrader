@@ -1,1 +1,21 @@
-Implement a program that computes the amount of change given blahblah. The program has two inputs: the amount due and the amount received from the customer. Display the dollars, quarters, dimes, nickels, and pennies that the customer should receive in return. In order to avoid roundoff errors, the program user should supply both amounts in pennies, for example 274 instead of $2.74. After making change, the user should be presented with the opportunity to repeat the making chance process again (with a new amount due and amount received). If the user enters "y", then the process repeats. If the user enters "n", then the program terminates.
+<p>Create a class called ChangeCalculator.</p>
+
+<p>Implement a function called calculateChange() with the following
+signature:</p>
+
+<p><code>public static String calculateChange(int changeInPennies)</code></p>
+
+<p>This function should return a String that describes the optimal number of
+dollars, quarters, dimes, nickels, and pennies that a customer should receive if
+they are due a certain amount of change described as a number of pennies. The
+conversion to pennies is done to avoid roundoff errors that occur in floating
+point arithmetic.</p>
+
+<p>Note that to pass the tests, your program MUST return the String formatted in
+a particular way. Look at the example code on the course website to see the
+exact format expected.</p>
+
+<p>In the main method, ask the user for two values: how much the customer owes
+in pennies and how much the customer has actually given in pennies. Then use
+your calculateChange() function to tell the cashier what kind of change to give
+the customer.</p>

@@ -1,4 +1,5 @@
 import os
+from pymongo import MongoClient
 from random import choice
 from selenium import webdriver
 from string import ascii_uppercase
@@ -32,8 +33,6 @@ def test_case_auth_crash(driver):
     driver.get('localhost:8080')
     usern = driver.find_element_by_name('username')
     passw = driver.find_element_by_name('password')
-    usern.clear()
-    passw.clear()
 
     usern.send_keys(generate_random_string())
     passw.send_keys(generate_random_string())
@@ -50,6 +49,33 @@ def test_case_auth_crash(driver):
     return True
 
 
+def test_case_user_creation_bug(driver):
+    driver.get('localhost:8080')
+    signup = driver.find_element_by_id('signUpButton')
+    signup.click()
+
+    usern = driver.find_element_by_name('username')
+    passw = driver.find_element_by_name('password')
+    confm = driver.find_element_by_name('confirm')
+
+    generated_username = generate_random_string()
+    generated_password = generate_random_string()
+    usern.send_keys(generated_username)
+    passw.send_keys(generated_password)
+    confm.send_keys(generated_password)
+    confm.submit()
+    sleep(1)
+
+    client = MongoClient('127.0.0.1', 27017)
+    db = client.shp_practice
+    user_collection = db.user
+    query_result = user_collection.find_one({'username': generated_username})
+
+    if len(query_result) == 0:
+        return False
+    return True
+
+
 if os.environ.get('CI') and os.environ.get('TRAVIS'):
     driver = travis_ci_setup()
 else:
@@ -57,7 +83,8 @@ else:
 
 print '----------------RUNNING SELENIUM FUNCTIONAL TESTS----------------'
 all_tests = [
-    'test_case_auth_crash'
+    'test_case_auth_crash',
+    'test_case_user_creation_bug'
 ]
 failed_tests = []
 errored_tests = []
