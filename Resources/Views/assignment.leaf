@@ -3,16 +3,67 @@
 #export("head") {
 
   #raw() {
+    <script src="http://codemirror.net/lib/codemirror.js"></script>
+    <link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
+    <script src="http://codemirror.net/mode/clike/clike.js"></script>
+    <script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
+
+    <style>
+    .CodeMirror {
+      line-height: 1.3em;
+      font-family: monospace;
+
+      /* Necessary so the scrollbar can be absolutely positioned within the wrapper on Lion. */
+      position: relative;
+      /* This prevents unwanted scrollbars from showing up on the body and wrapper in IE. */
+      overflow: hidden;
+      background-color: white;
+      width: 100%;
+
+      /* Copied from Bootstrap's textarea */
+      display: inline-block;
+      padding: 4px 6px;
+      margin-bottom: 9px;
+      color: #555555;
+      border: 1px solid #ccc;
+      -webkit-border-radius: 3px;
+      -moz-border-radius: 3px;
+      border-radius: 3px;
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+      -webkit-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -moz-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -ms-transition: border linear 0.2s, box-shadow linear 0.2s;
+      -o-transition: border linear 0.2s, box-shadow linear 0.2s;
+      transition: border linear 0.2s, box-shadow linear 0.2s;
+    }
+
+    .CodeMirror-focused {
+      /* Copied from Bootstrap's textarea */
+      border-color: rgba(82, 168, 236, 0.8);
+      outline: 0;
+      outline: thin dotted \9;
+      /* IE6-9 */
+
+      -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+         -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+              box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(82, 168, 236, 0.6);
+    }
+    </style>
+
     <script>
     // TODO: refactor these all into functions and stuff
     $(document).ready(function(){
       $('#save_button').click(function(){
-        var dataToSend = $('#assignmentForm').serializeArray();
         // TODO: strip off querystrings and stuff, make this more resilient
         var filename = window.location.href;
         var pattern = /\/assignment\/(\w+)\??/;
         var match = pattern.exec(filename);
-        dataToSend.push({'name': 'id', 'value': match[1]});
+        var dataToSend = {
+          'source': editor.getValue(),
+          'id': match[1]
+        };
         $.ajax({
           url: '/assignment',
           type : 'PATCH',
@@ -25,12 +76,14 @@
       });
 
       $('#grade_button').click(function(){
-        var dataToSend = $('#assignmentForm').serializeArray();
         // TODO: strip off querystrings and stuff, make this more resilient
         var filename = window.location.href;
         var pattern = /\/assignment\/(\w+)\??/;
         var match = pattern.exec(filename);
-        dataToSend.push({'name': 'id', 'value': match[1]});
+        var dataToSend = {
+          'source': editor.getValue(),
+          'id': match[1]
+        }
         $.ajax({
           url: '/grade',
           type : 'POST',
@@ -92,11 +145,17 @@
   <h1>Assignment</h1>
   <div id="assignmentDetails" custom="#(labNumber)" class="well"></div>
   <br>
-  <textarea name="source" cols="120" rows="40" form="assignmentForm" class="form-control">#(savedSource)</textarea>
-  <form id="assignmentForm">
-    <br>
-    <input type="submit" id="save_button" value="Save" class="btn btn-primary">
-    <input type="submit" id="grade_button" value="Save and Grade" class="btn btn-primary">
-    <button type="button" id="delete" class="btn btn-danger" assignmentId="#(id)">Delete</button>
-  </form>
+  <textarea name="source" cols="120" rows="40" class="form-control" id="code">#(savedSource)</textarea>
+  <br>
+  <button type="button" id="save_button" value="Save" class="btn btn-primary">Save</button>
+  <button type="button" id="grade_button" class="btn btn-primary">Save and Grade</button>
+  <button type="button" id="delete" class="btn btn-danger" assignmentId="#(id)">Delete</button>
+  <script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+      lineNumbers: true,
+      mode: "text/x-java",
+      indentUnit: 4,
+      autoCloseBrackets: true
+    });
+  </script>
 }
