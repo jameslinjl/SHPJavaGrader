@@ -1,76 +1,76 @@
 #extend("base")
 
 #export("head") {
-  #raw() {
-    <!-- nicer select formatting -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/i18n/defaults-*.min.js"></script>
+	#raw() {
+		<!-- nicer select formatting -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/css/bootstrap-select.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/bootstrap-select.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.2/js/i18n/defaults-*.min.js"></script>
 
-    <script>
-    $(document).ready(function(){
-      $('#assignmentForm').submit(function(){
-        $.post('/assignment', $('#assignmentForm').serializeArray())
-        .done(function() {
-            window.location = '/';
-        })
-        .fail(function() {
-            alert('POST failed! Probably invalid assignment information.');
-        });
-        return false;
-      });
+		<script>
+		$(document).ready(function(){
+			$('#assignmentForm').submit(function(){
+				$.post('/assignment', $('#assignmentForm').serializeArray())
+				.done(function() {
+						window.location = '/';
+				})
+				.fail(function() {
+						alert('POST failed! Probably invalid assignment information.');
+				});
+				return false;
+			});
 
-      $('#logOutButton').click(function(){
-        $.post('/logout')
-        .done(function() {
-            window.location = '/';
-        })
-        .fail(function() {
-            alert('An error on the server occurred!');
-        });
-      });
-    });
-    </script>
-  }
+			$('#logOutButton').click(function(){
+				$.post('/logout')
+				.done(function() {
+						window.location = '/';
+				})
+				.fail(function() {
+						alert('An error on the server occurred!');
+				});
+			});
+		});
+		</script>
+	}
 }
 
 #export("navbarContents") {
-  <ul class="nav navbar-nav navbar-right">
-    <li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
-  </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
+	</ul>
 }
 
 #export("body") {
 <div class="col-xs-6 push-md-9 bd-sidebar">
-  <h1>Main Assignments Page</h1>
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">Create New Assignment</h2>
-    </div>
-    <div class="panel-body">
-      <form id="assignmentForm">
-      <select name="labNumber" class="selectpicker">
-        #loop(assignmentMappings, "assignmentMapping") {
-          <option value="#(assignmentMapping.lab_number)">#(assignmentMapping.name) (Lab #(assignmentMapping.lab_number))</option>
-        }
-      </select>
-      <br><br>
-      <input type="submit" value="Create New Assignment Submission" class="btn btn-primary">
-    </form>
-    </div>
-  </div>
+	<h1>Main Assignments Page</h1>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">Create New Assignment</h2>
+		</div>
+		<div class="panel-body">
+			<form id="assignmentForm">
+			<select name="labNumber" class="selectpicker">
+				#loop(assignmentMappings, "assignmentMapping") {
+					<option value="#(assignmentMapping.lab_number)">#(assignmentMapping.name) (Lab #(assignmentMapping.lab_number))</option>
+				}
+			</select>
+			<br><br>
+			<input type="submit" value="Create New Assignment Submission" class="btn btn-primary">
+		</form>
+		</div>
+	</div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h2 class="panel-title">Current Assignments</h2>
-    </div>
-    <div class="panel-body">
-      <ul class="list-group">
-        #loop(assignments, "assignment") {
-          <li class="list-group-item"><a href="/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a></li>
-        }
-      </ul>
-    </div>
-  </div>
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h2 class="panel-title">Current Assignments</h2>
+		</div>
+		<div class="panel-body">
+			<ul class="list-group">
+				#loop(assignments, "assignment") {
+					<li class="list-group-item"><a href="/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a></li>
+				}
+			</ul>
+		</div>
+	</div>
 </div>
 }

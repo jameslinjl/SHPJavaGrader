@@ -23,7 +23,9 @@ let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
 drop.middleware.append(sessions)
 
-// see the home page if authenticated, otherwise go to login
+let users = UserController()
+drop.resource("user", users)
+
 drop.get { req in
 	// TODO: convert this into server-side authentication rather than trust the cookie
 	if let username = try req.session().data["username"]?.string,
@@ -71,36 +73,12 @@ drop.get { req in
 	return Response(redirect: "login")
 }
 
-// // see the login page
 drop.get("login") { req in
 	return try drop.view.make("login")
 }
 
-// see the signup page
 drop.get("signup") { req in
 	return try drop.view.make("signup")
-}
-
-// create a user using POST
-drop.post("user") { req in
-	if let username = req.data["username"]?.string, let password = req.data["password"]?.string {
-		if let check = try User.query().filter("username", username).first() {
-			return Response(status: .badRequest)
-		}
-		// TODO: salt the password as well
-		let password_enc = try drop.hash.make(password)
-		var user = User(name: username, pass: password_enc)
-		try user.save()
-	}
-	return Response(status: .ok)
-}
-
-// TODO: delete this
-// get all the users from the db
-drop.get("user") { req in
-	let jsonString = try GradingResult.all().makeJSON()
-	// let jsonString = try User.all().makeJSON()
-	return jsonString
 }
 
 // TODO: refactor assignment API into a controller and make RESTful
