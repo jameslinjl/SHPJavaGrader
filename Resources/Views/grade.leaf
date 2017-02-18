@@ -23,7 +23,7 @@
 
         $('#assignmentButton').click(function(){
           var assignmentId = $(document.activeElement).attr("assignmentId");
-          window.location = '/assignment/' + assignmentId;
+          window.location = '/view/assignment/' + assignmentId;
         });
       });
     </script>

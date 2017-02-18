@@ -23,8 +23,11 @@ let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
 drop.middleware.append(sessions)
 
-let users = UserController()
-drop.resource("user", users)
+let userController = UserController()
+drop.resource("user", userController)
+
+let assignmentController = AssignmentController()
+drop.resource("assignment", assignmentController)
 
 drop.get { req in
 	// TODO: convert this into server-side authentication rather than trust the cookie
@@ -81,44 +84,7 @@ drop.get("signup") { req in
 	return try drop.view.make("signup")
 }
 
-// TODO: refactor assignment API into a controller and make RESTful
-drop.post("assignment") { req in
-	if let labNumberString = req.data["labNumber"]?.string {
-		if let labNumber = Int(labNumberString) {
-			// ensure that a lab with this number exists
-			if let assignmentMapping = try AssignmentMapping.query().filter(
-				"lab_number",
-				labNumber
-			).first() {
-				if let username = try req.session().data["username"]?.string {
-					var assignment = Assignment(
-						username: username,
-						labNumber: labNumber,
-						content: ""
-					)
-					try assignment.save()
-				}
-			}
-			else {
-				return Response(status: .badRequest)
-			}
-		}
-	}
-	return Response(status: .ok)
-}
-
-drop.patch("assignment") { req in
-	// only PATCHes source right now, expand to do everything eventually
-	if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
-		if var assignment = try Assignment.find(id) {
-			assignment.content = source
-			try assignment.save()
-		}
-	}
-	return Response(status: .ok)
-}
-
-drop.get("assignment", ":id") { req in
+drop.get("view", "assignment", ":id") { req in
 	guard let assignmentId = req.parameters["id"]?.string else {
 		throw Abort.badRequest
 	}
@@ -131,20 +97,6 @@ drop.get("assignment", ":id") { req in
 		])    	
 	}
 	return Response(status: .badRequest)
-}
-
-drop.delete("assignment") { req in
-	if let id = req.data["id"]?.string {
-		let grades = try GradingResult.query().filter("assignmentId", id).all()
-		for grade in grades {
-			try grade.delete()
-		}
-		
-		if let assignment = try Assignment.find(id) {
-			try assignment.delete()
-		}
-	}
-	return Response(status: .ok)
 }
 
 drop.get("grade", ":id") { req in

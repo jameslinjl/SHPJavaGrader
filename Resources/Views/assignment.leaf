@@ -61,15 +61,14 @@
 				var pattern = /\/assignment\/(\w+)\??/;
 				var match = pattern.exec(filename);
 				var dataToSend = {
-					'source': editor.getValue(),
-					'id': match[1]
+					'source': editor.getValue()
 				};
 				$.ajax({
-					url: '/assignment',
+					url: '/assignment/' + match[1],
 					type : 'PATCH',
 					data : dataToSend,
 					error : function(jqXHR, textStatus, errorThrown) {
-						alert('PUT failed! Probably invalid assignment information.');
+						alert('PATCH failed! Probably invalid assignment information.');
 					}
 				});
 				return false;
@@ -102,11 +101,10 @@
 			$('#delete').click(function(){
 				var confirmed = confirm("Are you sure you want to delete this? There's no going back");
 				if (confirmed) {
-					var dataToSend = {'id': $(document.activeElement).attr("assignmentId")};
+					var id = $(document.activeElement).attr("assignmentId");
 					$.ajax({
-						url: '/assignment',
+						url: '/assignment/' + id,
 						type : 'DELETE',
-						data : dataToSend,
 						success: function() {
 							window.location = '/';
 						},
