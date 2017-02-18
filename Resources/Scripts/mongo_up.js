@@ -1,3 +1,4 @@
 db.assignmentmappings.drop();
 db.assignmentmappings.insert({"name" : "Easter Calculator", "lab_number" : NumberInt(1), "junit_path" : "../JUnit/EasterChecker.java", "expected_class": "EasterCalculator", "expected_junit": "EasterChecker"});
 db.assignmentmappings.insert({"name" : "Change Calculator", "lab_number" : NumberInt(2), "junit_path" : "../JUnit/ChangeCalculatorChecker.java", "expected_class": "ChangeCalculator", "expected_junit": "ChangeCalculatorChecker"});
+db.assignmentmappings.insert({"name" : "Statisics", "lab_number" : NumberInt(3), "junit_path" : "../JUnit/StatisticsChecker.java", "expected_class": "Statistics", "expected_junit": "StatisticsChecker"});

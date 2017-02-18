@@ -1,6 +1,6 @@
-<p>Create a class called ChangeCalculator.</p>
+<p>Create a class called <b>ChangeCalculator</b>.</p>
 
-<p>Implement a function called calculateChange() with the following
+<p>Implement a function with the following
 signature:</p>
 
 <p><code>public static String calculateChange(int changeInPennies)</code></p>
@@ -17,5 +17,5 @@ exact format expected.</p>
 
 <p>In the main method, ask the user for two values: how much the customer owes
 in pennies and how much the customer has actually given in pennies. Then use
-your calculateChange() function to tell the cashier what kind of change to give
+your function to tell the cashier what kind of change to give
 the customer.</p>

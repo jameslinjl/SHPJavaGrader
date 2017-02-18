@@ -57,9 +57,6 @@ public class ChangeCalculatorChecker {
         assertEquality(ChangeCalculator.calculateChange(0), 
             expected, "Test04");
 
-        assertEquality(ChangeCalculator.calculateChange(-15), 
-            expected, "Test05");
-
         System.out.println(passingTestsCount + "/" + 
             totalTestsCount + " tests passed.");
     }

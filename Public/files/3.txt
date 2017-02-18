@@ -1,0 +1,21 @@
+<p>Create a class called <b>Statistics</b>.</p>
+
+<p>Implement functions with the following signatures:</p>
+
+<p><code>public static double mix(double[] arr)</code></p>
+<p><code>public static double max(double[] arr)</code></p>
+<p><code>public static double mean(double[] arr)</code></p>
+<p><code>public static double median(double[] arr)</code></p>
+<p><code>public static double mode(double[] arr)</code></p>
+
+<p>Each of these functions should be fairly straight-forward. For the mode
+function, you can assume that there will only be a single mode in the data
+set. You CANNOT assume that the data set will be sorted, BUT you can write
+your own function to sort the array. Please do NOT use any built in Java
+library sorting functions. You must build your own sort function.</p>
+
+<p>You should also write a class called <b>StatisticsTester</b>. This does not have to
+be submitted. The class should have a main method which will prompt the user
+to specify a number of doubles they want to add to an array. Then, the user
+can type in the number of doubles that they specified and you should calculate
+the min, max, mean, and mode of the data set.</p>
