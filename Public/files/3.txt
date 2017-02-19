@@ -2,7 +2,7 @@
 
 <p>Implement functions with the following signatures:</p>
 
-<p><code>public static double mix(double[] arr)</code></p>
+<p><code>public static double min(double[] arr)</code></p>
 <p><code>public static double max(double[] arr)</code></p>
 <p><code>public static double mean(double[] arr)</code></p>
 <p><code>public static double median(double[] arr)</code></p>
