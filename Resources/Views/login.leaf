@@ -1,48 +1,48 @@
 #extend("base")
 
 #export("head") {
-  #raw() {
-    <script>
-    $(document).ready(function(){
-      $('#userPassForm').submit(function(){
-        $.post('/auth', $('#userPassForm').serializeArray())
-        .done(function() {
-            window.location = '/';
-        })
-        .fail(function() {
-            $('#failure').show();
-        });
-        return false;
-      });
-      $('#signUpButton').click(function(){
-        window.location = '/signup';
-      });
-    });
-    </script>
-  }
+	#raw() {
+		<script>
+		$(document).ready(function(){
+			$('#userPassForm').submit(function(){
+				$.post('/auth', $('#userPassForm').serializeArray())
+				.done(function() {
+						window.location = '/';
+				})
+				.fail(function() {
+						$('#failure').show();
+				});
+				return false;
+			});
+			$('#signUpButton').click(function(){
+				window.location = '/signup';
+			});
+		});
+		</script>
+	}
 }
 
 #export("navbarContents") {
-  <ul class="nav navbar-nav navbar-right">
-    <li><button type="button" id="signUpButton" class="btn btn-success navbar-btn">New User</button></li>
-  </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li><button type="button" id="signUpButton" class="btn btn-success navbar-btn">New User</button></li>
+	</ul>
 }
 
 #export("body") {
 <div class="col-xs-6 col-md-4 push-md-9 bd-sidebar">
-  <h1>Existing User Login</h1>
-  <form id="userPassForm">
-    <div class="form-group">
-      <label for="username">Username</label>
-      <input type="text" name="username" id="username" class="form-control">
-    </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" name="password" id="password" class="form-control">
-    </div>
-    <input type="submit" value="Submit" class="btn btn-primary">
-  </form>
-  <br>
-  <div class="alert alert-danger" role="alert" id="failure" hidden>Login Failed. Please try again.</div>
+	<h1>Existing User Login</h1>
+	<form id="userPassForm">
+		<div class="form-group">
+			<label for="username">Username</label>
+			<input type="text" name="username" id="username" class="form-control">
+		</div>
+		<div class="form-group">
+			<label for="password">Password</label>
+			<input type="password" name="password" id="password" class="form-control">
+		</div>
+		<input type="submit" value="Submit" class="btn btn-primary">
+	</form>
+	<br>
+	<div class="alert alert-danger" role="alert" id="failure" hidden>Login Failed. Please try again.</div>
 </div>
 }

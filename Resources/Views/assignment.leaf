@@ -89,7 +89,7 @@
 					data : dataToSend,
 					success: function(data) {
 						var gradeId = data['gradeId'];
-						window.location = '/grade/' + gradeId;
+						window.location = '/view/grade/' + gradeId;
 					},
 					error : function(jqXHR, textStatus, errorThrown) {
 						alert('POST failed! Probably invalid assignment information.');

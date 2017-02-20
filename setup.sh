@@ -31,24 +31,3 @@ else
     echo "Hamcrest jar not found. Downloading now."
     curl --location 'http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar' > Resources/JUnit/hamcrest-core-1.3.jar
 fi
-
-# kick off grade_runner
-GRADE_RUNNER_PID=`pgrep -f 'python grade_runner.py'`
-if [[ -n $GRADE_RUNNER_PID ]]; then
-    echo "Killing existing grade_runner.py and starting new one"
-    sudo kill -9 $GRADE_RUNNER_PID
-else
-    echo "No grade_runner.py currently running. Starting now."
-fi
-
-# cd hack to make $PATH correct?
-cd Resources/Scripts
-if [[ -n $1 && $1 == "prod" ]]; then
-    echo "Running prod grading script"
-    # make this actually log to a real place and not /dev/null someday
-    nohup python grade_runner.py prod > /dev/null 2>&1 &
-else
-    echo "Running dev grading script"
-    nohup python grade_runner.py > /dev/null 2>&1 &
-fi
-cd ../..

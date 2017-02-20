@@ -1,5 +1,5 @@
-import Vapor
 import HTTP
+import Vapor
 
 final class AssignmentController {
 	func create(_ req: Request) throws -> ResponseRepresentable {
