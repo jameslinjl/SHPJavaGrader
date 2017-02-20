@@ -18,7 +18,7 @@ Then Easter falls on day p of month n.
 </p>
 
 <p>
-Write a class called <strong>EasterCalculator</strong> (note that you MUST have this exact
+Write a class called <b>EasterCalculator</b> (note that you MUST have this exact
 name, or else you won't be able to test your code properly).
 </p>
 
