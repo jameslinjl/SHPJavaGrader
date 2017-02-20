@@ -1,5 +1,5 @@
-import Vapor
 import HTTP
+import Vapor
 
 final class UserController {
 	func index(_ req: Request) throws -> ResponseRepresentable {

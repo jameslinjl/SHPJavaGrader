@@ -67,7 +67,7 @@
 		<div class="panel-body">
 			<ul class="list-group">
 				#loop(assignments, "assignment") {
-					<li class="list-group-item"><a href="/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a></li>
+					<li class="list-group-item"><a href="/view/assignment/#(assignment.id)">Assignment #(assignment.lab_number)</a></li>
 				}
 			</ul>
 		</div>

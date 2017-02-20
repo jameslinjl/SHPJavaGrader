@@ -6,9 +6,15 @@ import VaporMongo
 
 let drop = Droplet()
 
+// DATABASE SETUP
+let dbName = drop.config[
+	"servers",
+	"default",
+	"mongoDBName"
+]?.string ?? "shp_practice"
 // TODO: actually use correct db authentication
 let mongo = try VaporMongo.Provider(
-	database: "shp_practice",
+	database: dbName,
 	user: "",
 	password: ""
 )
@@ -18,18 +24,53 @@ AssignmentMapping.database = drop.database
 Assignment.database = drop.database
 GradingResult.database = drop.database
 
+// MIDDLEWARE SETUP
 let memory = MemorySessions()
 let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
 drop.middleware.append(sessions)
 
-let users = UserController()
-drop.resource("user", users)
+// CONTROLLER SETUP
+let userController = UserController()
+drop.resource("user", userController)
+let assignmentController = AssignmentController()
+drop.resource("assignment", assignmentController)
+let gradeController = GradingResultController(dbName: dbName, dir: drop.workDir)
+drop.resource("grade", gradeController)
+
+// VIEWS
+drop.get("view", "assignment", ":id") { req in
+	guard let assignmentId = req.parameters["id"]?.string else {
+		throw Abort.badRequest
+	}
+
+	if let assignment = try Assignment.find(assignmentId) {
+		return try drop.view.make("assignment", [
+			"savedSource": assignment.content,
+			"labNumber": assignment.labNumber,
+			"id": assignmentId
+		])    	
+	}
+	return Response(status: .badRequest)
+}
+
+drop.get("view", "grade", ":id") { req in
+	guard let gradingResultId = req.parameters["id"]?.string else {
+		throw Abort.badRequest
+	}
+
+	if let gradingResult = try GradingResult.find(gradingResultId) {
+		return try drop.view.make("grade", [
+			"savedSource": gradingResult.content,
+			"assignmentId": gradingResult.assignmentId
+		])
+	}
+	return Response(status: .badRequest)
+}
 
 drop.get { req in
-	// TODO: convert this into server-side authentication rather than trust the cookie
 	if let username = try req.session().data["username"]?.string,
-	   let expirationTime = try req.session().data["expiration"]?.string {
+		let expirationTime = try req.session().data["expiration"]?.string {
 		let doubleExpirationTime = Date(timeIntervalSince1970: Double(expirationTime)!)
 		let currentTime = Date()
 		if doubleExpirationTime > currentTime {
@@ -81,118 +122,12 @@ drop.get("signup") { req in
 	return try drop.view.make("signup")
 }
 
-// TODO: refactor assignment API into a controller and make RESTful
-drop.post("assignment") { req in
-	if let labNumberString = req.data["labNumber"]?.string {
-		if let labNumber = Int(labNumberString) {
-			// ensure that a lab with this number exists
-			if let assignmentMapping = try AssignmentMapping.query().filter(
-				"lab_number",
-				labNumber
-			).first() {
-				if let username = try req.session().data["username"]?.string {
-					var assignment = Assignment(
-						username: username,
-						labNumber: labNumber,
-						content: ""
-					)
-					try assignment.save()
-				}
-			}
-			else {
-				return Response(status: .badRequest)
-			}
-		}
-	}
-	return Response(status: .ok)
-}
-
-drop.patch("assignment") { req in
-	// only PATCHes source right now, expand to do everything eventually
-	if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
-		if var assignment = try Assignment.find(id) {
-			assignment.content = source
-			try assignment.save()
-		}
-	}
-	return Response(status: .ok)
-}
-
-drop.get("assignment", ":id") { req in
-	guard let assignmentId = req.parameters["id"]?.string else {
-		throw Abort.badRequest
-	}
-
-	if let assignment = try Assignment.find(assignmentId) {
-		return try drop.view.make("assignment", [
-			"savedSource": assignment.content,
-			"labNumber": assignment.labNumber,
-			"id": assignmentId
-		])    	
-	}
-	return Response(status: .badRequest)
-}
-
-drop.delete("assignment") { req in
-	if let id = req.data["id"]?.string {
-		let grades = try GradingResult.query().filter("assignmentId", id).all()
-		for grade in grades {
-			try grade.delete()
-		}
-		
-		if let assignment = try Assignment.find(id) {
-			try assignment.delete()
-		}
-	}
-	return Response(status: .ok)
-}
-
-drop.get("grade", ":id") { req in
-	guard let gradingResultId = req.parameters["id"]?.string else {
-		throw Abort.badRequest
-	}
-
-	if let gradingResult = try GradingResult.find(gradingResultId) {
-		return try drop.view.make("grade", [
-			"savedSource": gradingResult.content,
-			"assignmentId": gradingResult.assignmentId
-		])
-	}
-	return Response(status: .badRequest)
-}
-
-drop.post("grade") { req in
-	if let source = req.data["source"]?.string, let id = req.data["id"]?.string {
-		// save first
-		// TODO: use a controller instead
-		if var assignment = try Assignment.find(id) {
-			assignment.content = source
-			try assignment.save()
-		}
-
-		// create a grading result document
-		if let username = try req.session().data["username"]?.string {
-			var gradingResult = GradingResult(
-				username: username,
-				assignmentId: id,
-				status: "pending",
-				content: "Waiting to be processed"
-			)
-			try gradingResult.save()
-			return try JSON(node: [
-				"gradeId": gradingResult.id
-			])
-		}
-	}
-	return Response(status: .badRequest)
-}
-
 drop.post("auth") { req in
-	if let username = req.data["username"]?.string, let password = req.data["password"]?.string {
+	if let username = req.data["username"]?.string,
+		let password = req.data["password"]?.string {
 		let password_enc = try drop.hash.make(password)
 		if let user = try User.query().filter("username", username).first() {
 			if user.password == password_enc {
-				// TODO: convert this into server-side authentication
 				try req.session().data["username"] = Node.string(username)
 				let unixTimestamp = String(
 					Date(

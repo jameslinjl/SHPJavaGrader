@@ -1,44 +1,44 @@
 #extend("base")
 
 #export("head") {
-  #raw() {
-    <script>
-      $(document).ready(function(){
-        var text = $('textarea#source').val();
-        if(text == 'Waiting to be processed') {
-            setTimeout(function(){
-               window.location.reload(1);
-            }, 5000);
-        }
+	#raw() {
+		<script>
+			$(document).ready(function(){
+				var text = $('textarea#source').val();
+				if(text == 'Waiting to be processed') {
+						setTimeout(function(){
+							 window.location.reload(1);
+						}, 1500);
+				}
 
-        $('#logOutButton').click(function(){
-          $.post('/logout')
-          .done(function() {
-              window.location = '/';
-          })
-          .fail(function() {
-              alert('An error on the server occurred!');
-          });
-        });
+				$('#logOutButton').click(function(){
+					$.post('/logout')
+					.done(function() {
+							window.location = '/';
+					})
+					.fail(function() {
+							alert('An error on the server occurred!');
+					});
+				});
 
-        $('#assignmentButton').click(function(){
-          var assignmentId = $(document.activeElement).attr("assignmentId");
-          window.location = '/assignment/' + assignmentId;
-        });
-      });
-    </script>
-  }
+				$('#assignmentButton').click(function(){
+					var assignmentId = $(document.activeElement).attr("assignmentId");
+					window.location = '/view/assignment/' + assignmentId;
+				});
+			});
+		</script>
+	}
 }
 
 #export("navbarContents") {
-  <ul class="nav navbar-nav navbar-right">
-    <li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
-  </ul>
+	<ul class="nav navbar-nav navbar-right">
+		<li><button type="button" id="logOutButton" class="btn btn-default navbar-btn">Log Out</button></li>
+	</ul>
 }
 
 #export("body") {
-  <h1>Grade</h1>
-  <textarea id="source" cols="120" rows="40">#(savedSource)</textarea>
-  <br>
-  <button type="button" id="assignmentButton" class="btn btn-primary" assignmentId="#(assignmentId)">Back to Assignment</button>
+	<h1>Grade</h1>
+	<textarea id="source" cols="120" rows="40">#(savedSource)</textarea>
+	<br>
+	<button type="button" id="assignmentButton" class="btn btn-primary" assignmentId="#(assignmentId)">Back to Assignment</button>
 }
