@@ -2,6 +2,10 @@ import Foundation
 import HTTP
 import Vapor
 
+#if os(macOS)
+typealias Task = Process
+#endif
+
 final class GradingResultController {
 	var dbName: String
 	var workDir: String
@@ -70,7 +74,7 @@ final class GradingResultController {
 	}
 
 	func shell(launchPath: String, arguments: [String] = []) {
-		let task = Process()
+		let task = Task()
 		task.launchPath = launchPath
 		task.arguments = arguments
 
