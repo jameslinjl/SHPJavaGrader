@@ -24,13 +24,11 @@ AssignmentMapping.database = drop.database
 Assignment.database = drop.database
 GradingResult.database = drop.database
 
-// MIDDLEWARE SETUP
 let memory = MemorySessions()
 let sessions = SessionsMiddleware(sessions: memory)
 let formatter = DateFormatter()
 drop.middleware.append(sessions)
 
-// CONTROLLER SETUP
 let userController = UserController()
 drop.resource("user", userController)
 let assignmentController = AssignmentController()
@@ -38,34 +36,35 @@ drop.resource("assignment", assignmentController)
 let gradeController = GradingResultController(dbName: dbName, dir: drop.workDir)
 drop.resource("grade", gradeController)
 
-// VIEWS
-drop.get("view", "assignment", ":id") { req in
-	guard let assignmentId = req.parameters["id"]?.string else {
-		throw Abort.badRequest
+drop.group("view") { view in
+	view.get("assignment", ":id") { req in
+		guard let assignmentId = req.parameters["id"]?.string else {
+			throw Abort.badRequest
+		}
+
+		if let assignment = try Assignment.find(assignmentId) {
+			return try drop.view.make("assignment", [
+				"savedSource": assignment.content,
+				"labNumber": assignment.labNumber,
+				"id": assignmentId
+			])
+		}
+		return Response(status: .badRequest)
 	}
 
-	if let assignment = try Assignment.find(assignmentId) {
-		return try drop.view.make("assignment", [
-			"savedSource": assignment.content,
-			"labNumber": assignment.labNumber,
-			"id": assignmentId
-		])    	
-	}
-	return Response(status: .badRequest)
-}
+	view.get("grade", ":id") { req in
+		guard let gradingResultId = req.parameters["id"]?.string else {
+			throw Abort.badRequest
+		}
 
-drop.get("view", "grade", ":id") { req in
-	guard let gradingResultId = req.parameters["id"]?.string else {
-		throw Abort.badRequest
+		if let gradingResult = try GradingResult.find(gradingResultId) {
+			return try drop.view.make("grade", [
+				"savedSource": gradingResult.content,
+				"assignmentId": gradingResult.assignmentId
+			])
+		}
+		return Response(status: .badRequest)
 	}
-
-	if let gradingResult = try GradingResult.find(gradingResultId) {
-		return try drop.view.make("grade", [
-			"savedSource": gradingResult.content,
-			"assignmentId": gradingResult.assignmentId
-		])
-	}
-	return Response(status: .badRequest)
 }
 
 drop.get { req in
