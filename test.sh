@@ -8,6 +8,15 @@ mongo localhost:27017/shp_practice Resources/Scripts/mongo_up_test.js
 nohup vapor run serve &
 python Test/selenium_functional_tests.py
 
+# one re-run chance in case of instability
+if [ $? -ne 0 ]; then
+	python Test/selenium_functional_tests.py
+	if [ $? -ne 0 ]; then
+		echo "Tests failed twice"
+		exit 1
+	fi
+fi
+
 # kill vapor server 
 VAPOR_PID=`pgrep -f 'vapor run serve'`
 if [[ -n $VAPOR_PID ]]; then
