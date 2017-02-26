@@ -29,40 +29,6 @@ def travis_ci_setup():
 def generate_random_string():
 	return ''.join(choice(ascii_uppercase) for i in range(12))
 
-def full_e2e_run(driver):
-	driver.get('http://0.0.0.0:8080')
-	usern = driver.find_element_by_name('username')
-	passw = driver.find_element_by_name('password')
-
-	usern.send_keys('jameslin')
-	passw.send_keys('1234')
-	passw.submit()
-	sleep(1)
-
-	form = driver.find_element_by_tag_name('form')
-	form.submit()
-	sleep(2)
-
-	assignments = driver.find_elements_by_link_text('Assignment 1')
-	assignments[len(assignments) - 1].click()
-	sleep(2)
-
-	driver.execute_script('editor.setValue(\'import java.util.Scanner;public class EasterCalculator {protected static String computeEaster(int y) {int a = y % 19;int b = y / 100;int c = y % 100;int d = b / 4;int e = b % 4;int g = (8 * b + 13) / 25;int h = (19 * a + b - d - g + 15) % 30;int j = c / 4;int k = c % 4;int m = (a + 11 * h) / 319;int r = (2 * e + 2 * j - k - h + m + 32) % 7;int n = (h - m + r + 90) / 25;int p = (h - m + r + n + 19) % 32;return n + "/" + p;}}\')')
-	sleep(1)
-
-	driver.find_element_by_id('grade_button').click()
-	test_pass = False
-	count = 0
-	while count < 2:
-		sleep(4)
-		if driver.find_element_by_id('source').text != 'Waiting to be processed':
-			test_pass = True
-		count = count + 1
-
-	driver.find_element_by_id('logOutButton').click()
-	sleep(1)
-	return test_pass
-
 def test_case_auth_crash(driver):
 	driver.get('http://0.0.0.0:8080')
 	usern = driver.find_element_by_name('username')
@@ -115,7 +81,6 @@ else:
 
 print '----------------RUNNING SELENIUM FUNCTIONAL TESTS----------------'
 all_tests = [
-	'full_e2e_run',
 	'test_case_auth_crash',
 	'test_case_user_creation_bug'
 ]
