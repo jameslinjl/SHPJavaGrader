@@ -30,6 +30,10 @@ final class Assignment: Model {
 		])
 	}
 
+	func merge(patch: Node?) {
+		content = patch?["content"]?.string ?? content
+	}
+
 	static func prepare(_ database: Database) throws {}
 
 	static func revert(_ database: Database) throws {}

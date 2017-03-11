@@ -18,14 +18,12 @@ final class AssignmentController {
 							content: ""
 						)
 						try assignment.save()
+						return assignment
 					}
-				}
-				else {
-					return Response(status: .badRequest)
 				}
 			}
 		}
-		return Response(status: .ok)
+		return Response(status: .badRequest)
 	}
 
 	func show(_ req: Request, _ assignment: Assignment) -> ResponseRepresentable {
@@ -33,14 +31,10 @@ final class AssignmentController {
 	}
 
 	func update(_ req: Request, _ assignment: Assignment) throws -> ResponseRepresentable {
-		// only PATCHes source right now, expand to do everything eventually
-		if let source = req.data["source"]?.string, let id = assignment.id {
-			if var modAssignment = try Assignment.find(id) {
-				modAssignment.content = source
-				try modAssignment.save()
-			}
-		}
-		return Response(status: .ok)
+		var assignment = assignment
+		assignment.merge(patch: req.json?.node)
+		try assignment.save()
+		return assignment
 	}
 
 	func destroy(_ req: Request, _ assignment: Assignment) throws -> ResponseRepresentable {
@@ -53,7 +47,7 @@ final class AssignmentController {
 			try grade.delete()
 		}
 		try assignment.delete()
-		return Response(status: .ok)
+		return Response(status: .noContent)
 	}
 }
 

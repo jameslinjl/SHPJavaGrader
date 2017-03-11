@@ -59,7 +59,7 @@ public class StatisticsChecker {
             assertEquals(
                 Statistics.median(arrays[i]),
                 expectedMedians[i],
-                "Mean Test " + i
+                "Median Test " + i
             );
         }
 
