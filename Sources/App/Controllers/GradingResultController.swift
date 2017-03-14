@@ -60,10 +60,7 @@ final class GradingResultController {
 						]
 					)
 				}
-
-				return try JSON(node: [
-					"gradeId": gradingResult.id
-				])
+				return gradingResult
 			}
 		}
 		return Response(status: .badRequest)

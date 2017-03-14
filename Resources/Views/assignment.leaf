@@ -3,10 +3,10 @@
 #export("head") {
 
 	#raw() {
-		<script src="http://codemirror.net/lib/codemirror.js"></script>
-		<link rel="stylesheet" href="http://codemirror.net/lib/codemirror.css">
-		<script src="http://codemirror.net/mode/clike/clike.js"></script>
-		<script src="http://codemirror.net/addon/edit/closebrackets.js"></script>
+		<script src="https://codemirror.net/lib/codemirror.js"></script>
+		<link rel="stylesheet" href="https://codemirror.net/lib/codemirror.css">
+		<script src="https://codemirror.net/mode/clike/clike.js"></script>
+		<script src="https://codemirror.net/addon/edit/closebrackets.js"></script>
 
 		<style>
 		.CodeMirror {
@@ -61,12 +61,13 @@
 				var pattern = /\/assignment\/(\w+)\??/;
 				var match = pattern.exec(filename);
 				var dataToSend = {
-					'source': editor.getValue()
+					'content': editor.getValue()
 				};
 				$.ajax({
 					url: '/assignment/' + match[1],
 					type : 'PATCH',
-					data : dataToSend,
+					data : JSON.stringify(dataToSend),
+					contentType: 'application/json',
 					error : function(jqXHR, textStatus, errorThrown) {
 						alert('PATCH failed! Probably invalid assignment information.');
 					}
@@ -88,7 +89,7 @@
 					type : 'POST',
 					data : dataToSend,
 					success: function(data) {
-						var gradeId = data['gradeId'];
+						var gradeId = data['_id'];
 						window.location = '/view/grade/' + gradeId;
 					},
 					error : function(jqXHR, textStatus, errorThrown) {

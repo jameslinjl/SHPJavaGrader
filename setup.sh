@@ -11,7 +11,11 @@ else
     # make sure that default data/db location is there
     sudo mkdir -p /data/db
     # fork so that the script will terminate
-    sudo mongod --fork --syslog
+    if [[ $1 == "prod" ]]; then
+        sudo mongod --fork --syslog --dbpath /var/lib/mongodb --bind_ip 127.0.0.1
+    else
+        sudo mongod --fork --syslog
+    fi
 fi
 
 # generate the static data

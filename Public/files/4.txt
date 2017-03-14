@@ -1,0 +1,25 @@
+<p>Create a class called <b>Drunkard</b>.</p>
+
+<p>Implement methods with the following signatures:</p>
+
+<p><code>public Drunkard(int x, int y)</code></p>
+<p><code>public void step()</code></p>
+<p><code>public void fastForward(int steps)</code></p>
+<p><code>public int howFar()</code></p>
+
+<p>The <b>step</b> method will pick a random cardinal direction for your
+particular drunkard to step in. The <b>fastForward</b> method will step a number
+of times corresponding to the input. The <b>howFar</b> method will return the 
+distance using "Manhattan Distance".</p>
+
+<p>You will need to have instance variables / fields with the following names
+and permissions:</p>
+
+<p><code>protected int x</code></p>
+<p><code>protected int y</code></p>
+<p><code>protected int initialX</code></p>
+<p><code>protected int initialY</code></p>
+
+<p>You should also write a class called <b>DrunkardTester</b>. This does not have to
+be submitted. Use this class to create instances of your Drunkard test to make
+sure that all the various methods work.</p>
